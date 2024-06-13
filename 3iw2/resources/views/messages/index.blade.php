@@ -10,8 +10,13 @@
             @foreach($messages as $message)
                 <article class="px-4 py-3 bg-white border shadow rounded-xl space-y-4">
                     <p>{{ $message->content }}</p>
+                    <div class="flex gap-2 flex-wrap">
+                        @foreach ($message->tags as $tag)
+                            <span style="--color: #{{$tag->color}}" class="text-sm px-1 py-0 rounded-md bg-[--color] font-semibold">{{ $tag->name }}</span>
+                        @endforeach
+                    </div>
                     <div>
-                        <p class="leading-none">{{ $message->author_name }}</p>
+                        <p class="leading-none">{{ $message->user->name }}</p>
                         <time class="text-sm text-slate-500">{{ $message->published_at->diffForHumans() }}</time>
                     </div>
                 </article>
@@ -21,13 +26,18 @@
             @csrf
 
             <div>
-                <textarea name="content" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full"></textarea>
+                <x-input-label for="content" value="Votre message" />
+                <textarea id="content" name="content" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full"></textarea>
                 <x-input-error class="mt-2" :messages="$errors->get('content')" />
             </div>
             <div>
-                <x-input-label for="author_name" value="Auteur" />
-                <x-text-input id="author_name" name="author_name" type="text" class="mt-1 block w-full" :value="old('author_name')" autocomplete="name" />
-                <x-input-error class="mt-2" :messages="$errors->get('author_name')" />
+                <x-input-label for="tags" value="Choisissez les tags" />
+                <select id="tags" name="tags[]" multiple class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
+                    @foreach ($tags as $tag)
+                        <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                    @endforeach
+                </select>
+                <x-input-error class="mt-2" :messages="$errors->get('tags')" />
             </div>
             <x-primary-button>Envoyer</x-primary-button>
         </form>

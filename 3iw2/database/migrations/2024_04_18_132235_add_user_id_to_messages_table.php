@@ -25,7 +25,8 @@ return new class () extends Migration {
     public function down(): void
     {
         Schema::table('messages', function (Blueprint $table) {
-            //
+            $table->dropConstrainedForeignIdFor(User::class);
+            $table->string('author_name');
         });
     }
 };
