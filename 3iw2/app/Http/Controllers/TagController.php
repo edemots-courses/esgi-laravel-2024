@@ -17,6 +17,7 @@ class TagController extends Controller
             ->select(['name', 'slug', 'color'])
             // ->orderBy('created_at', 'desc')
             // ->orderByDesc('created_at')
+            ->withCount(['messages'])
             ->latest()
             ->paginate();
 

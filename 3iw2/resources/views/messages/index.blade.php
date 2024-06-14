@@ -4,6 +4,19 @@
             Messages
         </h2>
     </x-slot>
+    
+    <section class="flex-none max-w-md mx-auto flex gap-4 items-center">
+        <form action="" class="flex gap-4 items-center">
+            <select id="tags" name="tags" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
+                <option value="" selected disabled>Sélectionnez un tag</option>
+                @foreach ($tags as $tag)
+                    <option value="{{ $tag->slug }}" @selected(request()->query('tags') === $tag->slug)>{{ $tag->name }}</option>
+                @endforeach
+            </select>
+            <x-secondary-button type="submit">Filtrer</x-secondary-button>
+        </form>
+        <a href="{{ route('messages.index') }}">Réinitialiser</a>
+    </section>
 
     <section class="flex-1 w-full max-w-sm mx-auto py-12 flex flex-col gap-8">
         <div class="flex-1 flex flex-col justify-end gap-4 overflow-y-auto">
