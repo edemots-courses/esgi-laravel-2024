@@ -13,10 +13,11 @@ class MessageController extends Controller
     public function index()
     {
         $messages = Message::query()
-            ->select(['id', 'content', 'author_name'])
+            ->select(['id', 'content', 'user_id'])
             // ->orderBy('created_at', 'asc')
             // ->orderBy('created_at')
             ->oldest()
+            ->with(['user:id,name'])
             ->get();
 
         return view('messages.index', [
@@ -25,34 +26,22 @@ class MessageController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
+        // Auth::id();
+        // auth()->id();
+        // $request->user()->id;
         $message = new Message();
-        $message->author_name = $request->get('author_name');
         $message->content = $request->get('content');
+        // $message->user_id = $request->user()->id;
+        $message->user()->associate($request->user());
         $message->save();
 
         // return redirect()->route('messages.index');
         // return to_route('messages.index');
         return back()->with('success', "Le message a bien été créé.");
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Message $message)
-    {
-        //
     }
 
     /**
@@ -68,7 +57,10 @@ class MessageController extends Controller
      */
     public function update(Request $request, Message $message)
     {
-        $message->author_name = $request->get('author_name');
+        if ($request->user()->id !== $message->user_id) {
+            return abort(403);
+        }
+
         $message->content = $request->get('content');
         $message->save();
 
@@ -78,8 +70,10 @@ class MessageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Message $message)
+    public function destroy(Request $request, Message $message)
     {
+        abort_if($request->user()->isNot($message->user), 403);
+
         $message->delete();
 
         return back()->with('success', "Le message de {$message->author_name} a bien été supprimé.");
