@@ -10,6 +10,13 @@
             <div class="bg-white p-4 rounded-lg border border-gray-300 shadow-md">
                 <p>{{ $message->content }}</p>
                 <p>{{ $message->author_name }}</p>
+                <a href="{{ route('messages.edit', ['message' => $message->id]) }}">🖊️ Modifier</a>
+
+                <form method="POST" action="{{ route('messages.destroy', ['message' => $message->id]) }}">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit">🗑️ Supprimer</button>
+                </form>
             </div>
         @endforeach
         <div class="bg-white p-4 rounded-lg border border-gray-300 shadow-md">

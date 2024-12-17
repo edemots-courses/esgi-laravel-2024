@@ -18,6 +18,14 @@
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
 
+            {{-- @if (session()->has('success')) --}}
+            @session('success')
+                <div class="bg-green-100 border border-green-500 text-green-700 p-2 rounded-md absolute inset-x-0 top-6 w-max mx-auto" role="alert">
+                    <p class="font-bold">Succès</p>
+                    <p>{{ session('success') }}</p>
+                </div>
+            @endsession
+
             <!-- Page Heading -->
             @isset($header)
                 <header class="bg-white shadow">
