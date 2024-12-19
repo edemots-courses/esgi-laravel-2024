@@ -12,6 +12,13 @@
                 @if ($message->user !== null)
                     <p>{{ $message->user->name }}</p>
                 @endif
+                <div class="flex gap-1 flex-wrap">
+                    @foreach ($message->tags as $tag)
+                        <span style="--bg-color: {{ $tag->color_hex }}" class="bg-[var(--bg-color)] px-2 py-0.5 rounded-full">
+                            {{ $tag->name }}
+                        </span>
+                    @endforeach
+                </div>
 
                 @if ($message->user_id === auth()->id())
                     <a href="{{ route('messages.edit', ['message' => $message->id]) }}">🖊️ Modifier</a>
@@ -29,6 +36,14 @@
                 @csrf
                 <x-input-label for="content">Message</x-input-label>
                 <textarea id="content" name="content" class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"></textarea>
+
+                <x-input-label for="tags">Tags</x-input-label>
+                <select name="tags[]" id="tags" multiple>
+                    @foreach ($tags as $tag)
+                        <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                    @endforeach
+                </select>
+
                 <x-primary-button>Envoyer</x-primary-button>
             </form>
         </div>

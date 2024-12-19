@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use App\Models\Tag;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
@@ -17,11 +19,16 @@ class MessageController extends Controller
             // ->orderBy('created_at', 'asc')
             // ->orderBy('created_at')
             ->oldest()
-            ->with(['user:id,name'])
+            ->with(['user:id,name', 'tags:id,name,color_hex'])
+            ->get();
+        $tags = Tag::query()
+            ->select(['id', 'name'])
+            ->orderBy('name')
             ->get();
 
         return view('messages.index', [
             'toto' => $messages,
+            'tags' => $tags,
         ]);
     }
 
@@ -39,6 +46,11 @@ class MessageController extends Controller
         $message->user()->associate($request->user());
         $message->save();
 
+        $message->tags()->syncWithPivotValues($request->get('tags'), [
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
         // return redirect()->route('messages.index');
         // return to_route('messages.index');
         return back()->with('success', "Le message a bien été créé.");
@@ -49,7 +61,11 @@ class MessageController extends Controller
      */
     public function edit(Message $message)
     {
-        return view('messages.edit', ['message' => $message]);
+        $tags = Tag::query()
+            ->select(['id', 'name'])
+            ->orderBy('name')
+            ->get();
+        return view('messages.edit', ['message' => $message, 'tags' => $tags]);
     }
 
     /**
@@ -63,6 +79,11 @@ class MessageController extends Controller
 
         $message->content = $request->get('content');
         $message->save();
+
+        $message->tags()->syncWithPivotValues($request->get('tags'), [
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
 
         return back()->with('success', "Le message a bien été modifié.");
     }

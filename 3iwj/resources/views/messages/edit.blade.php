@@ -10,6 +10,14 @@
         @method('PUT')
         <x-input-label for="content">Message</x-input-label>
         <textarea id="content" name="content" class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ $message->content }}</textarea>
+
+        <x-input-label for="tags">Tags</x-input-label>
+        <select name="tags[]" id="tags" multiple>
+            @foreach ($tags as $tag)
+                <option value="{{ $tag->id }}" @selected($message->tags->contains($tag))>{{ $tag->name }}</option>
+            @endforeach
+        </select>
+
         <x-primary-button>Modifier</x-primary-button>
         <a href="{{ route('messages.index') }}">Annuler</a>
     </form>
