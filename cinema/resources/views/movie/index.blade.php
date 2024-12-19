@@ -22,6 +22,9 @@
                             @if ($movie->type)
                                 <p>{{ $movie->type->nom }}</p>
                             @endif
+                            @if ($movie->annee_production)
+                                <p>{{ $movie->annee_production }}</p>
+                            @endif
                             @if ($movie->distributor)
                                 <p>Distribué par : {{ $movie->distributor->nom }}</p>
                             @endif

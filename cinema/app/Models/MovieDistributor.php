@@ -10,4 +10,9 @@ class MovieDistributor extends Model
     protected $table = 'distributeurs';
 
     protected $primaryKey = 'id_distributeur';
+
+    public function movies()
+    {
+        return $this->hasMany(Movie::class, 'id_distributeur');
+    }
 }

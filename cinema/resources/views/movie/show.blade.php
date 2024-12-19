@@ -1,4 +1,10 @@
 <x-app-layout>
+    <x-slot name="header">
+        <a href="{{ url()->previous() }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+            ← Retour
+        </a>
+    </x-slot>
+
     <div class="container mx-auto py-8">
         <section class="grid grid-cols-[1fr,1fr,16rem] items-start gap-8">
             <div class="rounded-2xl sticky top-8 overflow-hidden shadow-xl">
@@ -20,7 +26,7 @@
                     <p>{{ $movie->type->nom }}</p>
                 @endif
                 @if ($movie->distributor)
-                    <p>{{ $movie->distributor->nom }}</p>
+                    <p>Distribué par : <a href="{{ route('distributors.show', ['distributor' => $movie->id_distributeur]) }}">{{ $movie->distributor->nom }}</a></p>
                 @endif
             </article>
             <aside class="bg-white rounded-2xl p-4 shadow-lg">

@@ -14,9 +14,11 @@ class MovieController extends Controller
     public function index(Request $request)
     {
         $movies = Movie::query()
+            ->select(['id_film', 'id_genre', 'id_distributeur', 'annee_production', 'titre', 'resum'])
             ->when($request->has('types'), function (Builder $query) use ($request) {
                 $query->whereIn('id_genre', $request->get('types'));
             })
+            ->orderByDesc('annee_production')
             ->with(['type', 'distributor'])
             ->paginate();
 
@@ -34,6 +36,7 @@ class MovieController extends Controller
 
         $types = MovieType::query()->get();
 
+        // compact('movies', 'types') is equivalent to ['movies' => $movies, 'types' => $types]
         return view('movie.index', compact('movies', 'types'));
     }
 
